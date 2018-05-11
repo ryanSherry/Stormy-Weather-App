@@ -6,7 +6,9 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -31,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TextView darkSky = findViewById(R.id.darkSky);
+
+        darkSky.setMovementMethod(LinkMovementMethod.getInstance());
 
         String apiKey = ApiKey.getApiKey();
         double latitude = 37.8267;
