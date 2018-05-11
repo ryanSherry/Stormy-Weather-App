@@ -1,6 +1,7 @@
 package com.rsherry.stormyweatherapp;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +11,8 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.rsherry.stormyweatherapp.databinding.ActivityMainBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        final ActivityMainBinding binding = DataBindingUtil.setContentView(MainActivity.this,
+                R.layout.activity_main);
+
         TextView darkSky = findViewById(R.id.darkSky);
 
         darkSky.setMovementMethod(LinkMovementMethod.getInstance());
@@ -64,7 +69,22 @@ public class MainActivity extends AppCompatActivity {
                         String jsonData = response.body().string();
                         Log.v(TAG, jsonData);
                         if (response.isSuccessful()) {
+
                             currentWeather = getCurrentDetails(jsonData);
+
+                            CurrentWeather displayWeather = new CurrentWeather(
+                                    "Alcatrez Island, CA",
+                                    currentWeather.getIcon(),
+                                    currentWeather.getTime(),
+                                    currentWeather.getTemperature(),
+                                    currentWeather.getHumidity(),
+                                    currentWeather.getPrecipChance(),
+                                    currentWeather.getSummary(),
+                                    currentWeather.getTimezone()
+                            );
+
+                            binding.setWeather(displayWeather);
+
                         } else {
                             alertUserOfError();
                         }

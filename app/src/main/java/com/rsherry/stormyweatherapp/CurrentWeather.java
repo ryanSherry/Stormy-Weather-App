@@ -23,6 +23,9 @@ public class CurrentWeather {
         this.timezone = timezone;
     }
 
+    public CurrentWeather() {
+    }
+
     public CurrentWeather(String locationLabel, String icon, long time, double temperature, double humidity, double precipChance, String summary, String timezone) {
         this.locationLabel = locationLabel;
         this.icon = icon;
