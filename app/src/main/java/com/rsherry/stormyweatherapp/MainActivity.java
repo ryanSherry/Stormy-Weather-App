@@ -9,6 +9,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -20,6 +24,8 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+
+    private CurrentWeather currentWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +56,17 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
-                        Log.v(TAG, response.body().string());
+                        String jsonData = response.body().string();
+                        Log.v(TAG, jsonData);
                         if (response.isSuccessful()) {
+                            currentWeather = getCurrentDetails(jsonData);
                         } else {
                             alertUserOfError();
                         }
                     } catch (IOException e) {
                         Log.e(TAG, "IO Exception caught: ", e);
+                    } catch (JSONException e){
+                        Log.e(TAG,"JSON exception caught",e);
                     }
                 }
             });
@@ -64,6 +74,31 @@ public class MainActivity extends AppCompatActivity {
             alertUserOfNoNetwork();
         }
             Log.d(TAG, "Main UI code is running, horray!");
+    }
+
+    private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
+        JSONObject forecast = new JSONObject(jsonData);
+
+        String timeZone = forecast.getString("timezone");
+        Log.i(TAG,"From JSON: " + timeZone);
+
+        JSONObject currently = forecast.getJSONObject("currently");
+        Log.i(TAG,"From JSON: " + currently);
+
+        CurrentWeather currentWeather = new CurrentWeather(
+                "Alcatrez Island, CA",
+                currently.getString("icon"),
+                currently.getLong("time"),
+                currently.getDouble("temperature"),
+                currently.getDouble("humidity"),
+                currently.getDouble("precipProbability"),
+                currently.getString("summary"),
+                timeZone
+        );
+        Log.d(TAG,currentWeather.getFormattedTime());
+
+
+        return currentWeather;
     }
 
     private boolean isNetworkAvailable() {

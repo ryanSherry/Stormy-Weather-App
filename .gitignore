@@ -8,4 +8,4 @@
 /build
 /captures
 .externalNativeBuild
-/ApiKey.java
+app/src/main/java/com/rsherry/stormyweatherapp/ApiKey.java
